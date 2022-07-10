@@ -202,36 +202,37 @@ $(".card .list-group").sortable({
   scroll:false,
   tolerance:"pointer",
   helper:"clone",
-  activate:function(event){
-    console.log("activate", this);
+  activate:function(event,ui){
+    console.log(ui);
   },
-  deactivate: function(event){
-    console.log("deactivate", this);
+  deactivate: function(event, ui){
+    console.log(ui);
   },
   over:function(event){
-    console.log("over", event.target);
+    console.log( event);
   
   },
   out: function(event) {
-    console.log("out", event.target);
+    console.log( event);
 
   }, 
-  update: function(event){
+  update: function(){
     var tempArr=[];
-    $(this).children().each (function() {
-     var text = $(this)
-     .find("p")
-     .text()
-     .trim();
+    $(this)
+      .children()
+      .each (function() {
 
-     var date =$(this)
-     .find("span")
-     .text()
-     .trim();
+        tempArr.push({
+           text: $(this)
+          .find("p")
+          .text()
+          .trim(),
 
-     tempArr.push({
-      text:text,
-      date:date
+           date:$(this)
+          .find("span")
+          .text()
+          .trim(),
+
      });
 
     });
@@ -247,6 +248,10 @@ $(".card .list-group").sortable({
 
   },
 
+  stop: function(event){
+    $(this).removeClass("dropover");
+  }
+
  
   });
 
@@ -254,14 +259,13 @@ $(".card .list-group").sortable({
     accept: ".card .list-group-item",
     tolerance: "touch",
     drop: function(event, ui) {
-      console.log("drop");
       ui.draggable.remove();
     },
     over: function(event, ui) {
-      console.log("over");
+      console.log(ui);
     },
     out: function(event, ui) {
-      console.log("out");
+      console.log(ui);
     },
     
   });
