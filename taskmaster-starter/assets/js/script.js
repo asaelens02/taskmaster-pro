@@ -1,4 +1,25 @@
 var tasks = {};
+var auditTask =function(taskE1) {
+  var date =$(taskE1).find("span").text().trim();
+ 
+
+  var time = moment(date, "L").set("hour",17);
+
+$(taskE1).removeClass("list-group-item-warning list-group-item-danger");
+
+if (moment().isAfter(time)) {
+
+  $(taskE1).addClass("list-group-item-danger");
+
+}
+
+else if (Math.abs(moment().diff(time, "days"))<=2){
+  $(taskE1).addClass("list-group-item-warning");
+}
+
+  //to ensure elemtn is getting to the function
+
+};
 
 var createTask = function(taskText, taskDate, taskList) {
   // create elements that make up a task item
@@ -12,6 +33,9 @@ var createTask = function(taskText, taskDate, taskList) {
 
   // append span and p element to parent li
   taskLi.append(taskSpan, taskP);
+
+  //check due date
+  auditTask(taskLi);
 
 
   // append to ul list on the page
@@ -90,21 +114,28 @@ $(".list-group").on("blur", "textarea", function() {
 
 $(".list-group").on("click","span",function() {
   //get current text
-  var date = $(this)
-
-  .text()
-  .trim();
+  var date = $(this).text().trim();
 
   //create new input element
 
-  var dateInput = $("<input>")
-    .attr("type", "text")
-    .addClass("form-control")
-    .val(date);
+  var dateInput = $("<input>").attr("type","text").addClass("form-control").val(date);
 
     //swap out elements
 
     $(this).replaceWith(dateInput);
+
+    //enable jquery ui datepicker
+
+    dateInput.datepicker({
+      minDate:1,
+
+      onClose: function(){
+
+        //when calendar is closed, force a "change" event on the date input
+
+        $(this).trigger("change");
+      }
+    });
 
     //automatically focus on new element
     dateInput.trigger("focus");
@@ -112,12 +143,12 @@ $(".list-group").on("click","span",function() {
 
 //value of due date was changed
 
-$(".list-group").on("blur","input[type='text']", function () {
+$(".list-group").on("change","input[type='text']", function () {
   //get current text
 
   var date = $(this)
-  .val()
-  .trim();
+  .val();
+  
 
   //get the parent ul's id attribut
 
@@ -145,6 +176,8 @@ $(".list-group").on("blur","input[type='text']", function () {
   //replace input with span element
 
   $(this).replaceWith(taskSpan);
+
+  auditTask($(taskSpan).closest(".list-group-item"));
 
 });
 
@@ -269,6 +302,15 @@ $(".card .list-group").sortable({
     },
     
   });
+
+  $("#modalDueDate").datepicker({
+
+    minDate:1
+
+  });
+
+ 
+
 
 
   
