@@ -309,7 +309,13 @@ $(".card .list-group").sortable({
 
   });
 
- 
+ setInterval(function() {
+  $(".car .list-group-item").each(function(index,el) {
+
+    auditTask(el);
+  });
+
+ }, (1000*60)*30);
 
 
 
